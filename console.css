@@ -21,3 +21,13 @@
     border: 2px black solid;
     border-radius: 3px;
 }
+
+#debugCode {
+    position: fixed;
+    width: 2%;
+    left: 71%;
+    aspect-ratio: 1 / 1;
+    background-color: aqua;
+    border: 2px black solid;
+    border-radius: 3px;
+}
