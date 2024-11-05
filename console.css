@@ -1,0 +1,23 @@
+#codeInput {
+    border-radius: 5px;
+    resize: none;
+    width: 50%;
+    aspect-ratio: 2 / 1;
+    border: 2px black solid;
+}
+
+.code-box {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#runCode {
+    position: fixed;
+    width: 2%;
+    left: 73%;
+    aspect-ratio: 1 / 1;
+    background-color: aqua;
+    border: 2px black solid;
+    border-radius: 3px;
+}
