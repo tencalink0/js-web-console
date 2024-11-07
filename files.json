@@ -1,0 +1,6 @@
+[
+    {
+        "name": "test.js",
+        "content": "let i = 0;\nconsole.log(i + 2);\nlet p = 5;\nlet q = 7;\nconsole.log(p+q);"
+    }
+]

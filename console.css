@@ -30,7 +30,7 @@
     border-radius: 3px;
 }
 
-#debugList {
+.debugList {
     display: none;
     text-align: center;
 }
@@ -45,6 +45,10 @@
     font-family: 'Open Sans';
     font: 30px; 
     font-weight: bold;
+    overflow-y: auto;
+    overflow-wrap: break-word; 
+    word-wrap: break-word; 
+    overflow-x: hidden;
 }
 
 .console-btn-col {
