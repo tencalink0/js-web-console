@@ -5,21 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Code Runner</title>
     <link rel="stylesheet" href="console.css">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <style>
         h1 {
             text-align: center;
         }
+        footer {
+            padding: 1%;
+            bottom: 0;
+            position: fixed;
+            width: 97%;
+            background-color: #bbbbbb;
+        }
     </style>
+    <script src="console.js"></script>
 </head>
 <body>
     <h1>Type-in code executer</h1>
     <div class="code-box">
-        <textarea id="codeInput" rows="10" cols="50"></textarea>
-        <button onclick="runCode()" id="runCode">►</button>
-        <button onclick="debugCode()" id="debugCode">≡</button>
+        <textarea class="code-input" id="codeInput1" rows="10" cols="50"></textarea>
+        <div class="console-btn-col">
+            <button onclick="runCode(1,1)" id="runCode">►</button>
+            <button onclick="debugCode()" id="debugCode">≡</button>
+        </div>
     </div>
     <div id="debugList"></div>
-
-    <script src="console.js"></script>
+    <br>
+    <h1>Type-in console executer</h1>
+    <div class="code-box">
+        <textarea class="code-input" id="codeInput2" rows="10" cols="50"></textarea>
+        <div class="console-btn-col">
+            <button onclick="runCode(2,2)" id="runCode">►</button>
+        </div>
+        <div class="console" id="console2">[yourname]@liveconsole ~  <br></div>
+    </div>
+    <div id="debugList"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <footer>If you want to include this on your website, visit <a href="/build.html">here</a> to get the full instructions</footer>
 </body>
 </html>

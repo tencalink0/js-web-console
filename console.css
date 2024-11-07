@@ -1,4 +1,4 @@
-#codeInput {
+.code-input {
     border-radius: 5px;
     resize: none;
     width: 50%;
@@ -13,20 +13,18 @@
 }
 
 #runCode {
-    position: fixed;
-    width: 2%;
-    left: 73%;
-    aspect-ratio: 1 / 1;
+    width: 200%;
+    height: 100%;
+    padding: 5% 0;
     background-color: aqua;
     border: 2px black solid;
     border-radius: 3px;
 }
 
 #debugCode {
-    position: fixed;
-    width: 2%;
-    left: 71%;
-    aspect-ratio: 1 / 1;
+    width: 200%;
+    height: 100%;
+    padding: 5% 0;
     background-color: aqua;
     border: 2px black solid;
     border-radius: 3px;
@@ -35,4 +33,20 @@
 #debugList {
     display: none;
     text-align: center;
+}
+
+.console {
+    width: 50%;
+    aspect-ratio: 2 / 1;
+    background-color: black;
+    color: #5eca00;
+    border-radius: 5px;
+    padding: 2%;
+    font-family: 'Open Sans';
+    font: 30px; 
+    font-weight: bold;
+}
+
+.console-btn-col {
+    display: grid;
 }

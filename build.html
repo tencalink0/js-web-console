@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Build guide</title>
+    <style>
+        .block {
+            margin-left: 2%;
+            background-color: #cccccc;
+            width: 46%;
+        }
+        .block-group {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <h1>How to insert your desired web-js-console into your own website</h1>
+    <h2>Step 1 - Connect the javascript and css elements to your website:</h2>
+    <p>&lt;script src="https://webjsconsole.deno.dev/console.js"&gt;&lt;/script&gt;</p>
+    <p>&lt;link rel="stylesheet" href="https://webjsconsole.deno.dev/console.css"&gt;</p>
+    <h3>For the console font: </h3>
+    <p>&lt;link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'&gt;</p>
+    <h2>Step 2 - Copy and paste the desired html code into your website:</h2>
+        <h3>Type-in code executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block1">
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;textarea id="codeInput" rows="10" cols="50"&gt;&lt;/textarea&gt;<br>
+                    &ensp;&ensp;&lt;div class="console-btn-col"&gt;<br>
+                    &ensp;&ensp;&ensp;&ensp;&lt;button onclick="runCode()" id="runCode"&gt;►&lt;/button&gt;<br>
+                    &ensp;&ensp;&ensp;&ensp;&lt;button onclick="debugCode()" id="debugCode"&gt;≡&lt;/button&gt;<br>
+                    &ensp;&ensp;&lt;/div &gt;<br>
+                &lt;/div &gt;<br>
+                &lt;div id="debugList"&gt;&lt;/div&gt;
+            </div>
+        </div>
+</body>

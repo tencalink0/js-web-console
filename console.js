@@ -1,7 +1,15 @@
 let variables = [];
+let state = true; 
+let focusOnTerm = 0;
 
-function runCode() {
-    const code = document.getElementById('codeInput').value.replaceAll('console.log', 'window.alert');
+function runCode(num, displayType) {
+    let code = document.getElementById('codeInput' + String(num)).value;
+    if (displayType === 2) {
+        code = code.replaceAll('console.log(', 'displayOnTerm(' + String(num) + ',');
+        code = code.replaceAll('prompt(', 'waitForInput(' + String(num) + ',');
+    } else {
+        code = code.replaceAll('console.log(', 'window.alert');
+    }
     const outputDiv = document.getElementById('output');
 
     let vars = [];
@@ -20,6 +28,10 @@ function runCode() {
     } catch (error) {
         window.alert('Error: ' + error.message);
     }
+    if (displayType === 2) {
+        finaliseDisplaying(num);
+    }
+    console.log(variables);
 }
 
 function getVars(vars, type, code) {
@@ -77,6 +89,7 @@ function toString(vars) {
 }
 
 function debugCode() {
+    console.log('debugList');
     const debugList = document.getElementById('debugList');
     debugList.style.display = 'block';
     let tempHTML = '';
@@ -91,3 +104,61 @@ function debugCode() {
         debugList.style.display = 'none';
     }, 2000);
 }
+
+function displayOnTerm(num, stringInput) {
+    const displayTerminal = document.getElementById('console' + String(num));
+    state = false;
+    displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + '<br>';
+    displayTerminal.innerHTML += '> ' + String(stringInput) + ' ';
+}
+
+function finaliseDisplaying(num) {
+    const displayTerminal = document.getElementById('console' + String(num));
+    displayTerminal.innerHTML += '<br>[yourname]@liveconsole ~  ';
+    state = true;
+}
+
+function waitForInput(num, stringInput) {
+    const displayTerminal = document.getElementById('console' + String(num));
+    displayTerminal.innerHTML += '> ' + String(stringInput) + '<br>';
+}
+
+let flickerKey = setInterval(() => flickerKeyForTerminal(2), 500);
+
+function flickerKeyForTerminal(num) {
+    const displayTerminal = document.getElementById('console' + String(num));
+    const lastChar = displayTerminal.innerHTML.slice(-1);
+    if (state === true && focusOnTerm === num) {
+        if (lastChar === '│') {
+            displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + ' ';
+        } else {
+            displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + '│';
+        }
+    } else if (focusOnTerm !== num) {
+        displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + ' ';
+    }   
+}
+
+document.addEventListener('click', function(event) {
+    if (event.target.matches('div')) {
+        console.log('Clicked div id:', event.target.id);
+        if (event.target.id === 'console2') {
+            const displayTerminal = document.getElementById('console2');
+            displayTerminal.focus();    
+            focusOnTerm = 2;
+        } else {
+            focusOnTerm = 0;
+        }
+    } else {
+        focusOnTerm = 0;
+    }
+});
+
+document.addEventListener('keypress', function(event) {
+    let key = event.key;
+  
+    // A-z checker
+    if (/^[a-zA-Z]$/.test(key)) {
+      //console.log('Character pressed:', key);
+    }
+  });
