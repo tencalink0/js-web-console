@@ -9,6 +9,7 @@ let helpCommands = [
     ['benjs','Built in js compiler for running programs on fs'],
     ['clear', 'Clears terminal']
 ];
+let tempFilesInternet = [];
 
 function runCode(num, displayType) {
     let code = document.getElementById('codeInput' + String(num)).value;
@@ -18,6 +19,8 @@ function runCode(num, displayType) {
 }
 
 function parseCode(num, displayType, code) {
+    code = code.replace(/\/\/# sourceMappingURL=.*$/, '').trim();
+
     if (displayType === 2) {
         code = code.replaceAll('console.log(', 'displayOnTerm(' + String(num) + ',');
         code = code.replaceAll('prompt(', 'waitForInput(' + String(num) + ',');
@@ -31,19 +34,21 @@ function parseCode(num, displayType, code) {
     vars = getVars(vars, 'const', code);
     console.log(vars);
     let debug = toString(vars, num);
-    let debugCode = code + debug;
+    let debugCode;
+    debugCode = code + debug;
     return debugCode;
 }
 
 function runCodeFromString(code) {
     try {
         const wrappedCode = `(function() { ${code} })()`;
+        console.log('wrapped cd:', wrappedCode);
         const result = eval(wrappedCode);
+
         if (JSON.stringify(result) !== undefined) {
             resultVar = JSON.stringify(result);
             resultVar = JSON.parse(resultVar);
-            variables[resultVar[0]-1] = resultVar[1]
-            console.log(variables);
+            variables[resultVar[0]-1] = resultVar[1];
         }
     } catch (error) {
         window.alert('Error: ' + error.message);
@@ -252,6 +257,17 @@ function executeCode(num) {
             displayDebugOnTerm(num);
             finaliseDisplaying(num, 2);
             break;
+        case 'load':
+            loadFrom(executeString[1]).then(code => {
+                let filePath = executeString[1];
+                let name = filePath.split('/')
+                runCodeFromString(parseCode(num, 2, code));
+                finaliseDisplaying(num, 2);
+            }).catch(error => {
+                displayOnTerm(num, 'Error: ' + error.message);
+                finaliseDisplaying(num, 2);
+            });
+            break;
         default:
             displayOnTerm(num, 'Command <u>' + executeString[0] + '</u> not found');
             finaliseDisplaying(num, 2);
@@ -261,6 +277,22 @@ function executeCode(num) {
 
 function removeLastChar(str) {
     return str.length > 0 ? str.slice(0, -1) : str;
+}
+
+function loadFrom(internetPath) {
+    return fetch(internetPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            return data;
+        })
+        .catch(error => {
+            throw error;
+    });
 }
 
 function fetchFiles() {
@@ -276,7 +308,26 @@ function fetchFiles() {
         })
         .catch(error => {
             throw error;
-        });
+    });
+}
+
+function pasteFromClipboard(event) {
+    const clipboardData = event.clipboardData || window.clipboardData;
+    
+    if (clipboardData) {
+        const text = clipboardData.getData('text');
+        if (focusOnTerm >= 2 && focusOnTerm <= 3) {
+            if (terminalInputs[focusOnTerm-1].slice(-1) === 'v') {
+                deleteCharOfTerminal(focusOnTerm);
+            }
+            for (let i = 0; i < text.length; i++) { 
+                terminalInputs[focusOnTerm-1] += text[i];
+                insertKeysToTerminal(focusOnTerm);
+            } 
+        }
+    } else {
+        console.error('Clipboard data is not available.');
+    }
 }
 
 document.addEventListener('click', function(event) {
@@ -301,7 +352,7 @@ document.addEventListener('keydown', function(event) {
     let key = event.key;
     if (state) {
         if ([2, 3].includes(focusOnTerm)) {
-            if (/^[a-zA-Z]$/.test(key) || ['.'].includes(key)) {
+            if (/^[a-zA-Z]$/.test(key) || ['.',':','/'].includes(key)) {
                 terminalInputs[focusOnTerm-1] += key
                 insertKeysToTerminal(focusOnTerm);
             } else if (key === 'Backspace') {
@@ -312,8 +363,14 @@ document.addEventListener('keydown', function(event) {
                 insertKeysToTerminal(focusOnTerm);
             }
         }
-        if (key === 'Enter' && focusOnTerm === 3) {
-            executeCode(3);
+        if (focusOnTerm === 3) {
+            if (key === 'Enter') {
+                executeCode(3);
+            }
         }
     }
+});
+
+document.addEventListener('paste', function(event) {
+    pasteFromClipboard(event); 
 });
