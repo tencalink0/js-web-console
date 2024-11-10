@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Old Build guide</title>
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Open Sans';
+        }
+        .block {
+            margin-left: 2%;
+            background-color: #cccccc;
+            width: 45%;
+            padding: 1%;
+            border-radius: 15px;
+            margin-bottom: 2%;
+        }
+        .block-group {
+            display: flex;
+            flex-wrap:wrap; 
+        }
+        g {
+            color: #00ac00;
+        }
+        footer {
+            padding: 1%;
+            bottom: 0;
+            position: fixed;
+            width: 97%;
+            background-color: #bbbbbb;
+            outline: 2px solid #000000;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color:red">⚠ Warning, this is the <b>OLD</b> guide, please refer to the new guide <a href="/build.html">here</a> ⚠</h1>
+    <h1>How to insert your desired web-js-console into your own website</h1>
+    <h2>Step 1 - Connect the javascript and css elements to your website:</h2>
+    <p>&lt;script src="https://webjsconsole.deno.dev/console.js"&gt;&lt;/script&gt;</p>
+    <p>&lt;link rel="stylesheet" href="https://webjsconsole.deno.dev/console.css"&gt;</p>
+    <h3>For the console font: </h3>
+    <p>&lt;link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'&gt;</p>
+    <h2>Step 2 - Copy and paste the desired html code into your website:</h2>
+        <h3>Type-in code executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block1">
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;textarea id="codeInput" rows="10" cols="50"&gt;&lt;/textarea&gt;<br>
+                    &ensp;&ensp;&lt;div class="console-btn-col"&gt;<br>
+                    &ensp;&ensp;&ensp;&ensp;&lt;button onclick="runCode(1,1)" id="runCode"&gt;►&lt;/button&gt;<br>
+                    &ensp;&ensp;&ensp;&ensp;&lt;button onclick="debugCode(1)" id="debugCode"&gt;≡&lt;/button&gt;<br>
+                    &ensp;&ensp;&lt;/div &gt;<br>
+                &lt;/div &gt;<br>
+                &lt;div id="debugList"&gt;&lt;/div&gt;
+            </div>
+        </div>
+        <h3>Type-in console executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block2">
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;textarea class="code-input" id="codeInput2" rows="10" cols="50"&gt;&lt;/textarea&gt;<br>
+                    &ensp;&ensp;&lt;div class="console-btn-col"&gt;<br>
+                    &ensp;&ensp;&ensp;&ensp;&lt;button onclick="runCode(2,2)" id="runCode"&gt;►&lt;/button&gt;<br>
+                    &ensp;&ensp;&lt;/div&gt;<br>
+                    &ensp;&ensp;&lt;div class="console" id="console2"&gt;[yourname]@liveconsole ~  &lt;br&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;<br>
+            </div>
+        </div>
+        <h3>Console-pure executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block3">
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;div class="console" id="console3"&gt;[yourname]@liveconsole ~  &lt;br&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;<br>
+            </div>
+        </div>
+        <h3>On-load console executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block4">
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;div class="console" id="console4"&gt;[yourname]@liveconsole ~  &lt;br&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;<br>
+            </div>
+        </div>
+    <h2>Or - If you want to implement multiple consoles: </h2>
+        <h3>&ensp;&ensp;Please note: simplicity has been attempted but it isn't guaranteed</h3>
+        <h3>On-load console executer</h3>
+        <div class="block-group">
+            <div class = "block" id = "block5">
+                <g>// 1. Add the desired amount of consoles to your html<br><br>
+                // Look closely, the id number says console[id] where the id is its order number</g><br>
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;div class="console" id="console1"&gt;[yourname]@liveconsole ~  &lt;br&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;<br>
+                &lt;div class="code-box"&gt;<br>
+                    &ensp;&ensp;&lt;div class="console" id="console2"&gt;[yourname]@liveconsole ~  &lt;br&gt;&lt;/div&gt;<br>
+                &lt;/div&gt;<br>
+            </div>
+            <div class = "block" id = "block5">
+                <g>// 2. Modify the variables in console.js to fit your needs<br><br>
+                // These should have the as many variables as the amount of terminals present</g><br>
+                let variables = [[], [], [], []];<br>
+                let terminalInputs = ['', '', '', ''];<br>
+                <br>
+                <g>// This should contain an array of all the terminal based consoles</g><br>
+                const allowedConsoles = [2, 3, 4];<br>
+            </div>
+            <div class = "block" id = "block6">
+                <g>// 3. Add a key flicker (FOR ALL OF YOUR TERMINALS)<br><br>
+                // Pay attention. Here, a key flicker has been added for the consoles with id/num 2 & 3</g><br>
+                setInterval(() => flickerKeyForTerminal(2), 500);<br>
+                setInterval(() => flickerKeyForTerminal(3), 500);<br>
+            </div>
+            <div class="block" id="block7"> 
+                <g>// 4. Now go into: document.addEventListener('click', function(event) and observe<br><br>
+                // Modify all numbers which are 4 here and add all your consoles to the list (MAKE SURE TO ADD THEM ALL)</g><br>
+                    if (event.target.id === 'console4') {<br>
+                    &ensp;&ensp;const displayTerminal = document.getElementById('console4');<br>
+                    &ensp;&ensp;displayTerminal.focus();<br>
+                    &ensp;&ensp;focusOnTerm = 4;<br>
+                    } 
+            </div>
+        </div>
+        <h3>&ensp;&ensp;Then choose one of the following:<br></h3>
+        <div class="block-group">
+            <div class="block" id="block8">
+                <g>// 5. On-file load</g><br><br>
+                document.addEventListener('DOMContentLoaded', () => {<br>
+                    &ensp;&ensp;const fileName = 'test.js';<br>
+                    &ensp;&ensp;const num = 4;<br>
+                    <br>
+                    &ensp;&ensp;displayOnTerm(num, '');<br>
+                    &ensp;&ensp;fetchFiles().then(files => {<br>
+                    &ensp;&ensp;&ensp;&ensp;const foundFile = files.find(file => file.name === fileName);<br>
+                    &ensp;&ensp;&ensp;&ensp;if (foundFile !== undefined) {<br>
+                    &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;runCodeFromString(parseCode(num, 2, foundFile.content), num, 2);<br>
+                    &ensp;&ensp;&ensp;&ensp;} else {<br>
+                    &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;displayOnTerm(num, 'Error: ' + error.message);<br>
+                    &ensp;&ensp;&ensp;&ensp;}<br>
+                    &ensp;&ensp;&ensp;&ensp;finaliseDisplaying(num, 2);<br>
+                    &ensp;&ensp;}).catch(error => {<br>
+                    &ensp;&ensp;&ensp;&ensp;displayOnTerm(num, 'Error: ' + error.message);<br>
+                    &ensp;&ensp;&ensp;&ensp;finaliseDisplaying(num, 2);<br>
+                    &ensp;&ensp;});<br>
+                });
+            </div>
+            <div class="block" id="block9">
+                <g>// 5. On-link load</g><br><br>
+                document.addEventListener('DOMContentLoaded', () => {<br>
+                    &ensp;&ensp;const internetPath = 'http://localhost:5173/test2.js';<br>
+                    &ensp;&ensp;const num = 4;<br>
+                    &ensp;&ensp;displayOnTerm(num, '');<br>
+                    &ensp;&ensp;loadFrom(internetPath).then(code => {<br>
+                    &ensp;&ensp;&ensp;&ensp;runCodeFromString(parseCode(num, 2, code), num, 2);<br>
+                    &ensp;&ensp;&ensp;&ensp;finaliseDisplaying(num, 2);<br>
+                    &ensp;&ensp;}).catch(error => {<br>
+                    &ensp;&ensp;&ensp;&ensp;displayOnTerm(num, 'Error: ' + error.message);<br>
+                    &ensp;&ensp;&ensp;&ensp;finaliseDisplaying(num, 2);<br>
+                    &ensp;&ensp;});<br>
+                });
+            </div>
+        </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <footer>Try out the legacy terminals <a href="/console_test.html">here</a> <a style="color:red">(depricated)</a></footer>
+</body>
