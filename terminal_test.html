@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Code Runner</title>
+    <link rel="stylesheet" href="console.css">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <style>
+        body {
+            font-family: 'Open Sans';
+        }
+        h1 {
+            text-align: center;
+        }
+        footer {
+            padding: 1%;
+            bottom: 0;
+            position: fixed;
+            width: 97%;
+            background-color: #bbbbbb;
+            outline: 2px solid #000000;
+        }
+    </style>
+    <script src="terminal.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let terminal1 = new Terminal(1, 1, 'Type-in code executer');
+            let terminal2 = new Terminal(2, 2, 'Type-in console executer');
+            let terminal3 = new Terminal(3, 3, 'Console-pure executer');
+            let terminal4 = new Terminal(4, 4, 'On-load console executer');
+        });
+    </script>
+</head>
+<body>
+    <div id="terminal-div"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <footer>If you want to include this on your website, visit <a href="/build.html">here</a> to get the full instructions</footer>
+</body>
+</html>

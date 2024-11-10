@@ -12,22 +12,14 @@
     flex-wrap: wrap;
 }
 
-#runCode {
+.terminal-btn {
     width: 200%;
     height: 100%;
     padding: 5% 0;
     background-color: aqua;
     border: 2px black solid;
     border-radius: 3px;
-}
-
-#debugCode {
-    width: 200%;
-    height: 100%;
-    padding: 5% 0;
-    background-color: aqua;
-    border: 2px black solid;
-    border-radius: 3px;
+    pointer-events: auto;
 }
 
 .debugList {
