@@ -31,7 +31,6 @@
     width: 50%;
     aspect-ratio: 2 / 1;
     background-color: black;
-    color: #5eca00;
     border-radius: 5px;
     padding: 2%;
     font-family: 'Open Sans';
@@ -41,6 +40,19 @@
     overflow-wrap: break-word; 
     word-wrap: break-word; 
     overflow-x: hidden;
+    color: #5eca00;
+}
+
+b {
+    color: #007bc2;
+}
+
+r {
+    color: #f70000;
+}
+
+y {
+    color: #f3f700;
 }
 
 .console-btn-col {

@@ -31,16 +31,21 @@
             background-color: #bbbbbb;
             outline: 2px solid #000000;
         }
+        h3 {
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
     <h1>How to insert your desired web-js-console into your own website</h1>
     <h2>Step 1 - Connect the javascript and css elements to your website:</h2>
-    <p>&lt;script src="https://webjsconsole.deno.dev/terminal.js"&gt;&lt;/script&gt;</p>
-    <p>&lt;link rel="stylesheet" href="https://webjsconsole.deno.dev/console.css"&gt;</p>
+    <p>&ensp;&ensp;&lt;script src="https://webjsconsole.deno.dev/terminal.js"&gt;&lt;/script&gt;</p>
+    <p>&ensp;&ensp;&lt;link rel="stylesheet" href="https://webjsconsole.deno.dev/console.css"&gt;</p>
     <h3>For the console font: </h3>
-    <p>&lt;link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'&gt;</p>
-    <h2>Step 2 - Create new instances of the terminals which you would like:</h2>
+    <p>&ensp;&ensp;&lt;link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'&gt;</p>
+    <h2>Step 2 - Add the terminal-div html:</h2>
+    <p></p>&ensp;&ensp;&lt;div id="terminal-div"&gt;&lt;/div&gt;</p>
+    <h2>Step 3 - Create new instances of the terminals which you would like:</h2>
     <div class="block-group">
         <div class = "block">
             document.addEventListener('DOMContentLoaded', () => {<br>
@@ -76,7 +81,19 @@
             });<br>
         </div>
     </div>
-    <h3>⚠ Warning, if you have build your project using the old console.js, please refer to the old guide <a href="/old_build.html">here</a> ⚠</h3>
+    <h2>For Devs:</h2>
+        <h3>&ensp;&ensp;Reserved css classes:</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;Please check <a href="/console.css">console.css</a> for more information</h3>
+        <h3>&ensp;&ensp;To implement terminal arguments:</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;Add tArg0 as a variable and the parser will replace every occurence with its value</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp; Terminal Arguments are scalable so tArg1 is the 2nd argument and so on...</h3>
+        <h3>&ensp;&ensp;Reserved javascript keywords:</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;tArg0, tArg1, tArg2...</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;globalDisplayOnTerm(), globalWaitForInput()</h3>
+        <h3>&ensp;&ensp;Loading files issues:</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;When loading files externally, you may get a CORS error. This means that the browser's policy does not allow that file to be imported</h3>
+        <h3>&ensp;&ensp;&ensp;&ensp;Unfortunately, for security reasons, CORS cannot be turned off, so the only fix is to swap to an older browser</h3>
+    <h2 style="color:red">⚠ Warning, if you have build your project using the old console.js, please refer to the old guide <a href="/old_build.html">here</a> ⚠</h2>
     <br>
     <br>
     <br>

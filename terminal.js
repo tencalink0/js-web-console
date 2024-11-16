@@ -7,6 +7,7 @@ const helpCommands = [
     ['clear', 'Clears terminal'],
     ['load', 'Loads and run program from the internet']
 ];
+const allowedKeys = ['.', ':', '/', '_', '-'];
 let focusTerminal = 0;
 
 class Terminal {
@@ -89,21 +90,27 @@ class Terminal {
             setInterval(() => flickerKeyTerminal(this.id, this.state), 500);
             document.addEventListener('keydown', (event) => {
                 let key = event.key;
+                const displayTerminal = document.getElementById(`terminal${this.id}`);
                 if (this.state === true && this.id === focusTerminal) {
-                    if (/^[a-zA-Z]$/.test(key) || ['.', ':', '/'].includes(key)) {
+                    if (/^[a-zA-Z0-9]$/.test(key) || allowedKeys.includes(key)) {
                         this.insertKeyToTerminal(key);
+                        displayTerminal.scrollTop = displayTerminal.scrollHeight;
                     } else if (key === 'Backspace') {
                         this.deleteKeyOfTerminal();
+                        displayTerminal.scrollTop = displayTerminal.scrollHeight;
                     } else if (key === ' ') {
                         event.preventDefault();
                         this.insertKeyToTerminal(key);
+                        displayTerminal.scrollTop = displayTerminal.scrollHeight;
                     } else if (this.displayType === 3) {
                         if (key === 'Enter') {
                             this.executeCode();
+                            displayTerminal.scrollTop = displayTerminal.scrollHeight;
                         }
                     } else if (this.displayType === 4) {
                         if (key === 'Enter') {
                             this.executeCode(true);
+                            displayTerminal.scrollTop = displayTerminal.scrollHeight;
                         }
                     }
                 }
@@ -158,64 +165,134 @@ class Terminal {
     }
 
     executeCode(runBlock = false) {
-        const executeString = this.terminalInput.split(' ');
+        let executeString = this.terminalInput.split(' ');
         if (this.inputBlock !== true && runBlock === false) {
             switch (executeString[0]) {
                 case 'ls' : 
-                    fetchFiles(this.fsPath).then(files => {
-                        for (let i = 0; i < this.tempFilesInternet.length; i++) {
-                            files.push(this.tempFilesInternet);
-                        }
-                        for (let i = 0; i < files.length; i++) {
-                            this.displayOnTerm(' - ' + files[i].name);
-                        }
+                    if (executeString[1] === '--help') {
+                        this.displayOnTerm("<y>ls [args]\n\targs:\n\t\t-s : size (include size)</y>");
                         this.finaliseDisplaying();
-                    }).catch(error => {
-                        this.displayOnTerm('This directory is empty...');
-                        this.finaliseDisplaying();
-                    });
+                    } else {
+                        fetchFiles(this.fsPath).then(files => {
+                            let argPos = executeString.indexOf('-s');
+                            let includeSize = false;
+                            if (argPos !== -1) {
+                                executeString.splice(argPos, 1);
+                                includeSize = true;
+                            }
+                            for (let i = 0; i < this.tempFilesInternet.length; i++) {
+                                files.push(this.tempFilesInternet[i]);
+                            }
+                            for (let i = 0; i < files.length; i++) {
+                                if (includeSize) {
+                                    this.displayOnTerm('<b> - ' + files[i].name + ' | ' + estimateFileSize(files[i].content) + '</b>');
+                                } else {
+                                    this.displayOnTerm('<b> - ' + files[i].name + '</b>');
+                                }
+                            }
+                            this.finaliseDisplaying();
+                        }).catch(error => {
+                            this.displayOnTerm('This directory is empty...');
+                            this.finaliseDisplaying();
+                        });
+                    }
                     break;
                 case 'open':
-                    fetchFiles(this.fsPath).then(files => {
-                        const foundFile = files.find(file => file.name === executeString[1]);
-                        if (foundFile !== undefined) {
-                            this.displayOnTerm(foundFile.content.replace(/\n/g, '<br>&ensp;'));
-                        } else {
-                            const localFileFound = files.find(file => file.name === executeString[1]);
-                            if (localFileFound !== undefined) {
-                                this.displayOnTerm(localFileFound.content.replace(/\n/g, '<br>&ensp;'));
-                            } else {
-                                this.displayOnTerm('File not found ' + error);
+                    if (executeString[1] === '--help') {
+                        this.displayOnTerm('<y>open [args] [file]\n\targs:\n\t\t-d : debug\n\tsources:\n\t\tfs\n\t\tbuffer fs</y>');
+                        this.finaliseDisplaying();
+                    } else {
+                        fetchFiles(this.fsPath).then(files => {
+                            let foundFile = files.find(file => file.name === executeString[1]);
+                            if (executeString[1] === '-d' && executeString.length > 2) {
+                                foundFile = files.find(file => file.name === executeString[2]);
+                                if (foundFile !== undefined) {
+                                    foundFile.content = parseCode(foundFile.content, this.id, this.displayType);
+                                }
                             }
-                        }
-                        this.finaliseDisplaying();
-                    }).catch(error => {
-                        this.displayOnTerm('File not found: ' + error);
-                        this.finaliseDisplaying();
-                    });
+                            if (foundFile !== undefined) {
+                                let codeFinal = foundFile.content;
+                                let codeLines = codeFinal.split('\n');
+                                for (let i = 0; i < codeLines.length; i++) {
+                                    codeLines[i] = `${i+1}. \t<b>${codeLines[i]}</b>`;
+                                }
+                                codeFinal = codeLines.join('\n'); 
+                                this.displayOnTerm(codeFinal);
+                            } else {
+                                let localFileFound = this.tempFilesInternet.find(file => file.name === executeString[1]);
+                                if (executeString[1] === '-d' && executeString.length > 2) {
+                                    localFileFound = files.find(file => file.name === executeString[2]);
+                                    if (localFileFound !== undefined) {
+                                        localFileFound.content = parseCode(localFileFound.content, this.id, this.displayType);
+                                    }
+                                }
+                                if (localFileFound !== undefined) {
+                                    let codeFinal = localFileFound.content;
+                                    let codeLines = codeFinal.split('\n');
+                                    for (let i = 0; i < codeLines.length; i++) {
+                                        codeLines[i] = `${i+1}. \t<b>${codeLines[i]}</b>`;
+                                    }
+                                    codeFinal = codeLines.join('\n'); 
+                                    this.displayOnTerm(codeFinal);
+                                } else {
+                                    this.displayOnTerm('File not found ' + error);
+                                }
+                            }
+                            this.finaliseDisplaying();
+                        }).catch(error => {
+                            this.displayOnTerm('File not found: ' + error);
+                            this.finaliseDisplaying();
+                        });
+                    }
                     break;
                 case 'benjs':
-                    fetchFiles(this.fsPath).then(files => {
-                        const foundFile = files.find(file => file.name === executeString[1]);
-                        if (foundFile !== undefined) {
-                            this.runCodeFromString(parseCode(foundFile.content, this.id, this.displayType));
-                        } else {
-                            const localFileFound = this.tempFilesInternet.find(file => file.name === executeString[1]);
-                            if (localFileFound !== undefined) {
-                                this.runCodeFromString(parseCode(localFileFound.content, this.id, this.displayType));
-                            } else {
-                                this.displayOnTerm('File not found ' + error);
+                    if (executeString[1] === '--help') {
+                        this.displayOnTerm("<y>benjs [args] [file]\n\targs:\n\t\t-c : clean run (no debug)\n\t\t-r : raw execute (prevent wrapping)\n\t\t-cr : clean & raw\n\tsources:\n\t\tfs\n\t\tbuffer fs</y>");
+                        this.finaliseDisplaying();
+                    } else {
+                        fetchFiles(this.fsPath).then(files => {
+                            let terminalArgs;
+                            let argPos = executeString.indexOf('-c');
+                            let debugEnabled = true;
+                            if (argPos !== -1) {
+                                executeString.splice(argPos, 1);
+                                debugEnabled = false;
                             }
-                        }
-                        this.finaliseDisplaying();
-                    }).catch(error => {
-                        this.displayOnTerm('File not found: ' + error);
-                        this.finaliseDisplaying();
-                    });
+                            argPos = executeString.indexOf('-r');
+                            let wrappedEnabled = true;
+                            if (argPos !== -1) {
+                                executeString.splice(argPos, 1);
+                                wrappedEnabled = false;
+                            }
+                            argPos = executeString.indexOf('-cr');
+                            if (argPos !== -1) {
+                                executeString.splice(argPos, 1);
+                                debugEnabled = false;
+                                wrappedEnabled = false;
+                            }
+                            const foundFile = files.find(file => file.name === executeString[1]);
+                            if (foundFile !== undefined) {
+                                if (executeString.length > 2) terminalArgs = executeString.slice(2);
+                                this.runCodeFromString(parseCode(foundFile.content, this.id, this.displayType, debugEnabled, terminalArgs), wrappedEnabled);
+                            } else {
+                                const localFileFound = this.tempFilesInternet.find(file => file.name === executeString[1]);
+                                if (localFileFound !== undefined) {
+                                    if (executeString.length > 2) terminalArgs = executeString.slice(2);
+                                    this.runCodeFromString(parseCode(localFileFound.content, this.id, this.displayType, true, terminalArgs), wrappedEnabled);
+                                } else {
+                                    this.displayOnTerm('File not found ' + error);
+                                }
+                            }
+                            this.finaliseDisplaying();
+                        }).catch(error => {
+                            this.displayOnTerm('File not found: ' + error);
+                            this.finaliseDisplaying();
+                        });
+                    }
                     break;
                 case 'help':
                     for (let i = 0; i < helpCommands.length; i++) {
-                        this.displayOnTerm(helpCommands[i][0] + ' --- ' + helpCommands[i][1]);
+                        this.displayOnTerm('<y>' + helpCommands[i][0] + ' --- ' + helpCommands[i][1] + '</y>');
                     }
                     this.finaliseDisplaying();
                     break;
@@ -231,20 +308,16 @@ class Terminal {
                         let filePath = executeString[1];
                         let pathSplit = filePath.split('/');
                         let name;
-        
                         if (pathSplit.length > 0) {
-                            name = pathSplit.slice(-1);
+                            name = pathSplit.slice(-1)[0];
                         } else {
                             name = 'unknown';
                         }
-                        
-                        let success = this.runCodeFromString(parseCode(code, this.id, this.displayType));
-                        if (success !== false) {
-                            tempFilesInternet.push({
-                                'name': name,
-                                'content': code
-                            });
-                        }
+                        this.tempFilesInternet.push({
+                            "name": name,
+                            "content": code
+                        });
+                        this.displayOnTerm('Success!');
                         this.finaliseDisplaying();
                     }).catch(error => {
                         this.displayOnTerm('Error: ' + error.message);
@@ -268,10 +341,15 @@ class Terminal {
         this.finaliseDisplaying();
     }
     
-    runCodeFromString(code) {
+    runCodeFromString(code, wrapped = true) {
         try {
-            const wrappedCode = `(function() { ${code} })()`;
-            const result = eval(wrappedCode);
+            let finalCode; 
+            if (wrapped) {
+                finalCode = `(function() { ${code} })()`;
+            } else {
+                finalCode = code;
+            }
+            const result = eval(finalCode);
     
             if (JSON.stringify(result) !== undefined) {
                 let resultVar = JSON.stringify(result);
@@ -280,7 +358,7 @@ class Terminal {
             }
         } catch (error) {
             if ([2,3,4].includes(this.displayType)) {
-                this.displayOnTerm('Error: ' + error.message);
+                this.displayOnTerm(`<r>Error: ${error.message} \nType: ${error.name} \nLine: ${error.lineNumber}</r>`);
             } else {
                 window.alert('Error: ' + error.message);
             }
@@ -289,6 +367,9 @@ class Terminal {
     }
 
     displayOnTerm(stringInput, override = false) {
+        stringInput = String(stringInput);
+        stringInput = stringInput.replace(/\n/g, '<br>&ensp;');
+        stringInput = stringInput.replace(/\t/g, '&ensp;&ensp;');
         const displayTerminal = document.getElementById(`terminal${this.id}`);
         let displayWait = setInterval(() => {
             if (this.inputBlock === false || override === true) {
@@ -327,10 +408,10 @@ class Terminal {
         this.inputBlock = true;
         this.state = true;
         this.displayOnTerm(stringInput + ' ', true);
+        this.terminalInput = '';
     }
 
     unblockInput(value) {
-        console.log(value);
         this.inputBlock = false;
     }
 
@@ -415,23 +496,32 @@ function removeLastChar(str) {
     return str.length > 0 ? str.slice(0, -1) : str;
 }
 
-function parseCode(code, id, displayType) {
+function parseCode(code, id, displayType, debugEnabled = true, terminalArgs = undefined) {
     code = code.replace(/\/\/# sourceMappingURL=.*$/, '').trim();
-
+    console.log('TARGS:', terminalArgs);
     if ([2,3,4].includes(displayType)) {
         code = code.replaceAll('console.log(', 'globalDisplayOnTerm(' + String(id) + ',');
         code = code.replaceAll('prompt(', 'globalWaitForInput(' + String(id) + ',');
+        if (terminalArgs !== undefined) {
+            for (let i = 0; i < terminalArgs.length; i++) {
+                code = code.replaceAll(`tArg${i}`, terminalArgs[i]);
+            }
+        }
     } else {
         code = code.replaceAll('console.log', 'window.alert');
     }
 
-    let vars = [];
-    vars = getVars(vars, 'let', code);
-    vars = getVars(vars, 'var', code);
-    vars = getVars(vars, 'const', code);
-    let debug = varsToDebug(vars, id);
     let debugCode;
-    debugCode = code + debug;
+    if (debugEnabled) {
+        let vars = [];
+        vars = getVars(vars, 'let', code);
+        vars = getVars(vars, 'var', code);
+        vars = getVars(vars, 'const', code);
+        let debug = varsToDebug(vars, id);
+        debugCode = code + debug;
+    } else {
+        debugCode = code;
+    }
     return debugCode;
 }
 
@@ -492,16 +582,23 @@ function indexOfNot(str, char, startIndex = 0) {
 function flickerKeyTerminal(id, state) {
     const displayTerminal = document.getElementById(`terminal${id}`);
     const lastChar = displayTerminal.innerHTML.slice(-1);
-    if (state === true && focusTerminal === id) {
-        if (lastChar === '│') {
+
+    const selection = window.getSelection();
+    const isSelectingText = selection && selection.toString().length > 0;
+
+    if (!isSelectingText) {
+        if (state === true && focusTerminal === id) {
+            if (lastChar === '│') {
+                displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + ' ';
+            } else {
+                displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + '│';
+            }
+        } else if (focusTerminal !== id) {
             displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + ' ';
-        } else {
-            displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + '│';
         }
-    } else if (focusTerminal !== id) {
-        displayTerminal.innerHTML = displayTerminal.innerHTML.slice(0, -1) + ' ';
-    }   
+    }
 }
+
 
 function loadFrom(internetPath) {
     return fetch(internetPath)
@@ -533,6 +630,23 @@ function fetchFiles(fsPath) {
         .catch(error => {
             throw error;
     });
+}
+
+function estimateFileSize(string) {
+    if (typeof string !== 'string') {
+        return "?";
+    }
+    const charCount = string.length;
+
+    let sizeInBytes = charCount * 1.5;
+
+    if (sizeInBytes < 1024) {
+        return sizeInBytes.toFixed(2) + " B";
+    } else if (sizeInBytes < 1048576) {
+        return (sizeInBytes / 1024).toFixed(0) + " KB";
+    } else {
+        return (sizeInBytes / 1048576).toFixed(0) + " MB";
+    }
 }
 
 document.addEventListener('click', function(event) {
