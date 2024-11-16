@@ -137,27 +137,26 @@ class Terminal {
 
     initOnload(path, type = true) { // Type is (true for link) and (false for file inside fs)
         if (this.id === 4) {
+            this.displayOnTerm('', true);
             if (type === true) {
-                this.displayOnTerm('');
                 loadFrom(path).then(code => {
                     this.runCodeFromString(parseCode(code, this.id, this.displayType));
                     this.finaliseDisplaying();
                 }).catch(error => {
-                    this.displayOnTerm('Error: ' + error.message);
+                    this.displayOnTerm('<r>Error: ' + error.message + '</r>');
                     this.finaliseDisplaying();
                 });
             } else {
-                this.displayOnTerm('');
                 fetchFiles(this.fsPath).then(files => {
                     const foundFile = files.find(file => file.name === path);
                     if (foundFile !== undefined) {
                         this.runCodeFromString(parseCode(foundFile.content, this.id, this.displayType));
                     } else {
-                        this.displayOnTerm('Error: File not found');
+                        this.displayOnTerm('<r>Error: File not found</r>');
                     }
                     this.finaliseDisplaying();
                 }).catch(error => {
-                    this.displayOnTerm('Error: ' + error.message);
+                    this.displayOnTerm('<r>Error: ' + error.message + '</r>');
                     this.finaliseDisplaying();
                 });
             }
@@ -208,7 +207,7 @@ class Terminal {
                             }
                             this.finaliseDisplaying();
                         }).catch(error => {
-                            this.displayOnTerm('This directory is empty...');
+                            this.displayOnTerm('<r>This directory is empty...</r>');
                             this.finaliseDisplaying();
                         });
                     }
@@ -251,12 +250,12 @@ class Terminal {
                                     codeFinal = codeLines.join('\n'); 
                                     this.displayOnTerm(codeFinal);
                                 } else {
-                                    this.displayOnTerm('File not found ' + error);
+                                    this.displayOnTerm('<r>File not found ' + error + '</r>');
                                 }
                             }
                             this.finaliseDisplaying();
                         }).catch(error => {
-                            this.displayOnTerm('File not found: ' + error);
+                            this.displayOnTerm('<r>File not found: ' + error + '</r>');
                             this.finaliseDisplaying();
                         });
                     }
@@ -296,12 +295,12 @@ class Terminal {
                                     if (executeString.length > 2) terminalArgs = executeString.slice(2);
                                     this.runCodeFromString(parseCode(localFileFound.content, this.id, this.displayType, true, terminalArgs), wrappedEnabled);
                                 } else {
-                                    this.displayOnTerm('File not found ' + error);
+                                    this.displayOnTerm('<r>File not found ' + error + '</r>');
                                 }
                             }
                             this.finaliseDisplaying();
                         }).catch(error => {
-                            this.displayOnTerm('File not found: ' + error);
+                            this.displayOnTerm('<r>File not found: ' + error + '</r>');
                             this.finaliseDisplaying();
                         });
                     }
@@ -336,7 +335,7 @@ class Terminal {
                         this.displayOnTerm('Success!');
                         this.finaliseDisplaying();
                     }).catch(error => {
-                        this.displayOnTerm('Error: ' + error.message);
+                        this.displayOnTerm('<r>Error: ' + error.message + '</r>');
                         this.finaliseDisplaying();
                     });
                     break;
