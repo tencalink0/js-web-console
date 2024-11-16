@@ -170,7 +170,7 @@ class Terminal {
             switch (executeString[0]) {
                 case 'ls' : 
                     if (executeString[1] === '--help') {
-                        this.displayOnTerm("<y>ls [args]\n\targs:\n\t\t-s : size (include size)</y>");
+                        this.displayOnTerm("<y>ls [args]\n\targs:\n\t\t-s : size (include size)\n\t\t-d : include description</y>");
                         this.finaliseDisplaying();
                     } else {
                         fetchFiles(this.fsPath).then(files => {
@@ -180,14 +180,30 @@ class Terminal {
                                 executeString.splice(argPos, 1);
                                 includeSize = true;
                             }
+
+                            argPos = executeString.indexOf('-d');
+                            let includeDescription = false;
+                            if (argPos !== -1) {
+                                executeString.splice(argPos, 1);
+                                includeDescription = true;
+                            }
+
                             for (let i = 0; i < this.tempFilesInternet.length; i++) {
                                 files.push(this.tempFilesInternet[i]);
                             }
                             for (let i = 0; i < files.length; i++) {
                                 if (includeSize) {
-                                    this.displayOnTerm('<b> - ' + files[i].name + ' | ' + estimateFileSize(files[i].content) + '</b>');
+                                    if (includeDescription) {
+                                        this.displayOnTerm('<b> - ' + files[i].name + ' | ' + estimateFileSize(files[i].content) + '\n\tdescription: ' + files[i].description + '</b>');
+                                    } else {
+                                        this.displayOnTerm('<b> - ' + files[i].name + ' | ' + estimateFileSize(files[i].content) + '</b>');
+                                    }
                                 } else {
-                                    this.displayOnTerm('<b> - ' + files[i].name + '</b>');
+                                    if (includeDescription) {
+                                        this.displayOnTerm('<b> - ' + files[i].name + '\n\tdescription: ' + files[i].description + '</b>');
+                                    } else {
+                                        this.displayOnTerm('<b> - ' + files[i].name + '</b>');
+                                    }
                                 }
                             }
                             this.finaliseDisplaying();

@@ -7,6 +7,6 @@
     {
         "name": "sqrt.js",
         "content": "function simpleMethod(number) {\n\tlet n = 0;\n\tlet success = false;\n\tdo {let nsquared = n*n;\n\t\tif (nsquared === number) {\n\t\t\tsuccess = true;\n\t\t} else {\n\t\t\tn++;\n\t\t}\n\t} while (success === false)\n\treturn n;\n}\n\nfunction betterMethod(number) {\n\tlet low = 1;\n\tlet high = number;\n\tlet guess = 0;\n\tlet success = false;\n\tdo {\n\t\tguess = (low + high) / 2;\n\t\tif (guess**2 === number) {\n\t\t\tsuccess = true;\n\t\t} else if (guess**2 > number) {\n\t\t\thigh = guess;\n\t\t} else {\n\t\t\tlow = guess;\n\t\t}\n\t} while (success === false)\n\treturn guess;\n}\n\n//console.log(simpleMethod(1e18));\nconsole.log(betterMethod(tArg0));",
-        "description": "Square rooting a number by taking a terminal arguement"
+        "description": "Square rooting a number by taking a terminal argument (MUST BE RUN USING -cr or else it crashes)"
     }
 ]
