@@ -86,7 +86,7 @@ class Terminal {
             }
 
         });
-        if ([2,3,4].includes(this.id)) {
+        if ([2,3,4].includes(this.displayType)) {
             setInterval(() => flickerKeyTerminal(this.id, this.state), 500);
             document.addEventListener('keydown', (event) => {
                 let key = event.key;
